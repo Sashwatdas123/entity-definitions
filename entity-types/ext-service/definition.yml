@@ -99,9 +99,13 @@ synthesis:
       telemetry.sdk.language:
         entityTagName: language
       telemetry.sdk.version:
+        ttl: P1D
       service.namespace:
+        ttl: P1D
       faas.name:
+        ttl: P1D
       faas.id:
+        ttl: P1D
       newrelic.service.type:
         ttl: P1D
 
