@@ -79,3 +79,30 @@ relationships:
           fields:
             - field: awsLambdaAliasArn
               attribute: faas.id
+
+  - name: extServiceCallsAwsLambdaAlias_InvokedArn
+    version: "1"
+    origins:
+      - Distributed Tracing
+      - OpenTelemetry
+    conditions:
+      - attribute: eventType
+        anyOf: [ "Log", "Span" ]
+      - attribute: newrelic.source
+        anyOf: [ "api.logs.otlp", "api.traces.otlp" ]
+      - attribute: entity.type
+        anyOf: [ "SERVICE" ]
+      - attribute: aws.lambda.invoked_arn
+        regex: "^arn:aws:lambda:([^:]*):([^:]*):function:([^:]*):([^/]*)$"
+    relationship:
+      expires: PT75M
+      relationshipType: CALLS
+      source:
+        extractGuid:
+          attribute: entity.guid
+      target:
+        lookupGuid:
+          candidateCategory: AWSLAMBDAALIAS
+          fields:
+            - field: awsLambdaAliasArn
+              attribute: aws.lambda.invoked_arn
